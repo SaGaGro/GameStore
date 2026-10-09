@@ -1,0 +1,301 @@
+@model GameStore.Models.DB.Game
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<!-- ปุ่มกลับ -->
+<a asp-action="Index" class="btn btn-sm mb-3" style="border: 1px solid #e94560; color: #e94560;">
+    ← กลับร้านค้า
+</a>
+
+<div class="row">
+    <!-- รูปเกม -->
+    <div class="col-md-5">
+        <img src="@Model.CoverImage" alt="@Model.Title" class="w-100 rounded-3" style="border: 1px solid #e9456033;" />
+
+        <!-- รูปเพิ่มเติม Mock -->
+        <div class="row mt-2 g-2">
+            <div class="col-3">
+                <img src="https://placehold.co/150x90/0f3460/e94560?text=Screenshot+1" class="w-100 rounded" style="opacity: 0.7; cursor: pointer;" />
+            </div>
+            <div class="col-3">
+                <img src="https://placehold.co/150x90/0f3460/e94560?text=Screenshot+2" class="w-100 rounded" style="opacity: 0.7; cursor: pointer;" />
+            </div>
+            <div class="col-3">
+                <img src="https://placehold.co/150x90/0f3460/e94560?text=Screenshot+3" class="w-100 rounded" style="opacity: 0.7; cursor: pointer;" />
+            </div>
+            <div class="col-3">
+                <img src="https://placehold.co/150x90/0f3460/e94560?text=Screenshot+4" class="w-100 rounded" style="opacity: 0.7; cursor: pointer;" />
+            </div>
+        </div>
+    </div>
+
+    <!-- ข้อมูลเกม -->
+    <div class="col-md-7">
+        <div class="rounded-3 p-4" style="background: #16213e; border: 1px solid #e94560
+22;">
+
+            <h2 class="fw-bold mb-1">@Model.Title</h2>
+            <span class="game-genre" style="font-size: 14px;">@Model.Genre</span>
+
+            <!-- Rating -->
+            <div class="mt-2 mb-3" style="color: #f1c40f;">
+                ⭐ @(Model.Rating?.ToString("F1") ?? "0.0") /5
+                <span class="text-secondary ms-2">(@(Model.ReviewCount ?? 0) รีวิว · ขายแล้ว @(Model.SoldCount?.ToString("N0") ?? "0") ชุด)</span>
+            </div>
+
+            <!-- ราคา -->
+            @{
+                var isEarlyBird = Model.ReleaseDate > DateTime.Now && Model.DiscountPercent > 0;
+            }
+            <div class="p-3 rounded-3 mb-3" style="background: #0f3460; @(isEarlyBird ? "border: 1px solid #f39c1255;" : "")">
+                @if (Model.IsFree == true)
+                {
+                    <span style="font-size: 28px; font-weight: bold; color: #27ae60;">ฟรี</span>
+                }
+                else if (isEarlyBird)
+                {
+                    var discounted = Model.BasePrice - (Model.BasePrice * Model.DiscountPercent!.Value / 100);
+                    <div class="mb-1">
+                        <span style="background:#f39c12; color:#000; font-weight:bold; font-size:13px; padding:3px 10px; border-radius:4px;">⚡ Early Bird -@Model.DiscountPercent%</span>
+                    </div>
+                    <span class="game-price-old" style="font-size: 18px;">฿@Model.BasePrice.ToString("N0")</span>
+                    <span style="font-size: 28px; font-weight: bold; color: #f39c12;"> ฿@discounted.ToString("N0")</span>
+                    <div class="mt-2" style="font-size: 12px; color: #f39c12;">
+                        🗓️ ราคานี้ใช้ได้ถึงวันวางจำหน่าย
+                        <strong id="releaseDate" data-release="@Model.ReleaseDate!.Value.ToString("o")"></strong>
+                    </div>
+                }
+                else if (Model.DiscountPercent > 0)
+                {
+                    var discounted = Model.BasePrice - (Model.BasePrice * Model.DiscountPercent.Value / 100);
+                    <span class="badge-sale me-2" style="font-size: 14px; padding: 5px 12px;">-@Model.DiscountPercent%</span>
+                    <span class="game-price-old" style="font-size: 18px;">฿@Model.BasePrice.ToString("N0")</span>
+                    <span style="font-size: 28px; font-weight: bold; color: #e94560;"> ฿@discounted.ToString("N0")</span>
+                }
+                else
+                {
+                    <span style="font-size: 28px; font-weight: bold; color: #e94560;">฿@Model.BasePrice.ToString("N0")</span>
+                }
+            </div>
+
+            @if (isEarlyBird)
+            {
+                <!-- Countdown -->
+                <div class="rounded-3 p-3 mb-3 text-center" style="background: #f39c1215; border: 1px solid #f39c1244;">
+                    <div style="font-size: 12px; color: #f39c12; margin-bottom: 6px;">⏳ นับถอยหลังสู่วันวางจำหน่าย</div>
+                    <div id="countdown" style="font-size: 22px; font-weight: bold; color: #f39c12; letter-spacing: 2px;">--d --h --m --s</div>
+                    <div style="font-size: 11px; color: #888; margin-top: 4px;">@Model.ReleaseDate!.Value.ToString("dd MMMM yyyy")</div>
+                </div>
+            }
+
+            <!-- ปุ่มซื้อ / ทดลอง -->
+            @{
+                var isOwned    = ViewBag.IsOwned as bool? ?? false;
+                var inCart     = ViewBag.InCart  as bool? ?? false;
+                var freePromo  = ViewBag.FreePromo as GameStore.Models.DB.Promotion;
+            }
+            <div class="d-flex gap-2 mb-3">
+                @if (isOwned)
+                {
+                    <button class="btn fw-bold flex-fill py-2" style="background: #27ae60; color: #fff; font-size: 16px;" disabled>
+                        ✅ คุณมีเกมนี้แล้ว
+                    </button>
+                }
+                else if (freePromo != null)
+                {
+                    <form asp-area="Customer" asp-controller="Cart" asp-action="ClaimFreeGame" method="post" class="flex-fill">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="gameId" value="@Model.GameId" />
+                        <button type="submit" class="btn fw-bold w-100 py-2" style="background: #27ae60; color: #fff; font-size: 16px;">
+                            🎁 รับฟรี! (ถึง @freePromo.EndDate.ToString("dd MMM yyyy"))
+                        </button>
+                    </form>
+                }
+                else if (Model.IsFree == true)
+                {
+                    <form asp-area="Customer" asp-controller="Cart" asp-action="Add" method="post" class="flex-fill">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="gameId" value="@Model.GameId" />
+                        <button type="submit" class="btn fw-bold w-100 py-2" style="background: #27ae60; color: #fff; font-size: 16px;">
+                            🎮 รับเกมฟรี
+                        </button>
+                    </form>
+                }
+                else if (inCart)
+                {
+                    <a asp-area="Customer" asp-controller="Cart" asp-action="Index" class="btn fw-bold flex-fill py-2" style="background: #0f3460; color: #e94560; border: 1px solid #e94560; font-size: 16px;">
+                        🛒 อยู่ในตะกร้าแล้ว
+                    </a>
+                }
+                else
+                {
+                    <form asp-area="Customer" asp-controller="Cart" asp-action="Add" method="post" class="flex-fill">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="gameId" value="@Model.GameId" />
+                        <button type="submit" class="btn fw-bold w-100 py-2" style="background: #e94560; color: #fff; font-size: 16px;">
+                            🛒 เพิ่มลงตะกร้า
+                        </button>
+                    </form>
+                }
+                @{
+                    var isWishlisted = ViewBag.IsWishlisted as bool? ?? false;
+                }
+                @if (isWishlisted)
+                {
+                    <form asp-area="Customer" asp-controller="Wishlist" asp-action="Remove" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="gameId" value="@Model.GameId" />
+                        <button type="submit" class="btn py-2" style="background: #e9456022; border: 1px solid #e94560; color: #e94560; width: 160px;">
+                            ♥ Wishlisted
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-area="Customer" asp-controller="Wishlist" asp-action="Add" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="gameId" value="@Model.GameId" />
+                        <button type="submit" class="btn py-2" style="border: 1px solid #e94560; color: #e94560; width: 160px;">
+                            ♡ Wishlist
+                        </button>
+                    </form>
+                }
+            </div>
+
+            @if (Model.HasTrial == true)
+            {
+                <button class="btn w-100 mb-3 py-2" style="border: 1px solid #27ae60; color: #27ae60;">
+                    🕹️ ทดลองเล่นฟรี @Model.TrialHours ชั่วโมง
+                </button>
+            }
+
+            <!-- รายละเอียด -->
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <p class="text-secondary" style="font-size: 14px; line-height: 1.8;">
+                    @Model.Description
+                </p>
+            }
+            else
+            {
+                <p class="text-secondary" style="font-size: 14px; line-height: 1.8;">
+                    สัมผัสประสบการณ์การเล่นเกมที่ไม่เหมือนใครกับ @Model.Title
+                    เกมแนว @Model.Genre ที่จะพาคุณไปผจญภัยในโลกที่สร้างขึ้นอย่างวิจิตรบรรจง
+                    พร้อมระบบการเล่นที่ลึกซึ้งและกราฟิกที่สวยงาม
+                </p>
+            }
+
+            <!-- ข้อมูลเพิ่มเติม -->
+            <div class="mt-3 p-3 rounded-3" style="background: #0f3460; font-size: 13px;">
+                <div class="row">
+                    <div class="col-6 mb-2">
+                        <span class="text-secondary">หมวดหมู่:</span>
+                        <span class="text-light ms-1">@Model.Genre</span>
+                    </div>
+                    <div class="col-6 mb-2">
+                        <span class="text-secondary">วันวางจำหน่าย:</span>
+                        <span class="text-light ms-1">@(Model.ReleaseDate?.ToString("dd MMM yyyy") ?? "-")</span>
+                    </div>
+                    <div class="col-6 mb-2">
+                        <span class="text-secondary">ผู้พัฒนา:</span>
+                        <span class="text-light ms-1">@(Model.Publisher?.DisplayName ?? Model.Publisher?.Username ?? "-")</span>
+                    </div>
+                    <div class="col-6 mb-2">
+                        <span class="text-secondary">แพลตฟอร์ม:</span>
+                        <span class="text-light ms-1">Windows</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- System Requirements -->
+<div class="row mt-4">
+    <div class="col-12">
+        <p class="section-title">💻 ความต้องการของระบบ</p>
+        <div class="rounded-3 p-4" style="background: #16213e; border: 1px solid #e9456022;">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="text-accent mb-3">ขั้นต่ำ</h6>
+                    <table style="font-size: 13px; width: 100%;">
+                        <tr><td class="text-secondary pe-3 py-1">OS:</td><td>Windows 10 64-bit</td></tr>
+                        <tr><td class="text-secondary pe-3 py-1">CPU:</td><td>Intel Core i5-4460</td></tr>
+                        <tr><td class="text-secondary pe-3 py-1">RAM:</td><td>8 GB</td></tr>
+                        <tr><td class="text-secondary pe-3 py-1">GPU:</td><td>NVIDIA GTX 960</td></tr>
+                        <tr><td class="text-secondary pe-3 py-1">Storage:</td><td>50 GB</td></tr>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="text-accent mb-3">แนะนำ</h6>
+                    <table style="font-size: 13px; width: 100%;">
+                        <tr><td class="text-secondary pe-3 py-1">OS:</td><td>Windows 10/11 64-bit</td></tr>
+                        <tr><td class="text-secondary pe-3 py-1">CPU:</td><td>Intel Core i7-8700</td></tr>
+                        <tr><td class="text-secondary pe-3 py-1">RAM:</td><td>16 GB</td></tr>
+                        <tr><td class="text-secondary pe-3 py-1">GPU:</td><td>NVIDIA RTX 2060</td></tr>
+                        <tr><td class="text-secondary pe-3 py-1">Storage:</td><td>50 GB SSD</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (isEarlyBird)
+{
+    <script>
+        (function () {
+            var releaseEl = document.getElementById('releaseDate');
+            var cdEl = document.getElementById('countdown');
+            if (!cdEl) return;
+            var release = new Date(releaseEl ? releaseEl.dataset.release : '');
+
+            function update() {
+                var diff = release - new Date();
+                if (diff <= 0) { cdEl.textContent = 'วางจำหน่ายแล้ว!'; return; }
+                var d = Math.floor(diff / 86400000);
+                var h = Math.floor((diff % 86400000) / 3600000);
+                var m = Math.floor((diff % 3600000) / 60000);
+                var s = Math.floor((diff % 60000) / 1000);
+                cdEl.textContent = d + 'd ' + String(h).padStart(2,'0') + 'h ' + String(m).padStart(2,'0') + 'm ' + String(s).padStart(2,'0') + 's';
+            }
+            update();
+            setInterval(update, 1000);
+        })();
+    </script>
+}
+
+<!-- รีวิว -->
+<div class="row mt-4 mb-5">
+    <div class="col-12">
+        <p class="section-title">💬 รีวิวจากผู้เล่น</p>
+
+        <!-- เขียนรีวิว -->
+        <div class="rounded-3 p-3 mb-3" style="background: #16213e; border: 1px solid #e9456022;">
+            <h6 class="mb-2">เขียนรีวิว</h6>
+            <div class="mb-2">
+                <span style="color: #f1c40f; font-size: 20px; cursor: pointer;">☆ ☆ ☆ ☆ ☆</span>
+            </div>
+            <textarea class="form-control mb-2" rows="3" placeholder="แชร์ความคิดเห็นของคุณ..."
+                style="background: #0f3460; border: 1px solid #e9456055; color: #fff;"></textarea>
+            <button class="btn btn-sm fw-bold" style="background: #e94560; color: #fff;">ส่งรีวิว</button>
+        </div>
+
+        @foreach (var review in Model.Reviews.OrderByDescending(r => r.CreatedAt).Take(5))
+        {
+            <div class="rounded-3 p-3 mb-2" style="background: #16213e; border: 1px solid #e9456022;">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <span class="fw-bold">@(review.User.DisplayName ?? review.User.Username)</span>
+                        <span class="text-secondary ms-2" style="font-size: 12px;">@(review.CreatedAt?.ToString("dd MMM yyyy") ?? "-")</span>
+                    </div>
+                    <span style="color: #f1c40f;">@string.Concat(Enumerable.Repeat("⭐", review.Rating))</span>
+                </div>
+                <p class="text-secondary mt-2 mb-0" style="font-size: 14px;">@review.Comment</p>
+            </div>
+        }
+    </div>
+</div>

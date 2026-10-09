@@ -1,0 +1,95 @@
+@model List<GameStore.Models.DB.Game>
+
+@{
+    ViewData["Title"] = "Wishlist";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <p class="section-title mb-0">♡ Wishlist ของฉัน</p>
+    <span style="color: #888;">@Model.Count เกม</span>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="text-center py-5">
+        <p style="font-size: 48px;">♡</p>
+        <p class="text-secondary">ยังไม่มีเกมใน Wishlist</p>
+        <a asp-area="Customer" asp-controller="Game" asp-action="Index" class="btn mt-2" style="background: #e94560; color: #fff;">
+            ไปเลือกเกม
+        </a>
+    </div>
+}
+else
+{
+    @foreach (var game in Model)
+    {
+        <div class="rounded-3 p-3 mb-3 d-flex align-items-center" style="background: #16213e; border: 1px solid #e9456022;">
+
+            <a asp-area="Customer" asp-controller="Game" asp-action="Detail" asp-route-id="@game.GameId">
+                <img src="@game.CoverImage" alt="@game.Title" class="rounded" style="width: 180px; height: 100px; object-fit: cover;" />
+            </a>
+
+            <div class="ms-3 flex-fill">
+                <a asp-area="Customer" asp-controller="Game" asp-action="Detail" asp-route-id="@game.GameId" style="text-decoration: none;">
+                    <h6 class="fw-bold text-light mb-1">@game.Title</h6>
+                </a>
+                <span class="game-genre">@game.Genre</span>
+                <div class="mt-1" style="color: #f1c40f; font-size: 12px;">
+                    ⭐ @(game.Rating?.ToString("F1") ?? "0.0") /5
+                </div>
+                @if (game.HasTrial == true)
+                {
+                    <div style="font-size: 11px; color: #27ae60;">🎮 ทดลองเล่นฟรี @game.TrialHours ชม.</div>
+                }
+            </div>
+
+            <!-- ราคา + ปุ่ม -->
+            <div class="text-end" style="min-width: 200px;">
+                <div class="mb-2">
+                    @if (game.IsFree == true)
+                    {
+                        <span style="font-size: 20px; font-weight: bold; color: #27ae60;">ฟรี</span>
+                    }
+                    else if (game.DiscountPercent > 0)
+                    {
+                        var discounted = game.BasePrice - (game.BasePrice * game.DiscountPercent.Value / 100);
+                        <span class="badge-sale me-1">-@game.DiscountPercent%</span>
+                        <span class="game-price-old">฿@game.BasePrice.ToString("N0")</span>
+                        <span style="font-size: 20px; font-weight: bold; color: #e94560;"> ฿@discounted.ToString("N0")</span>
+                    }
+                    else
+                    {
+                        <span style="font-size: 20px; font-weight: bold; color: #e94560;">฿@game.BasePrice.ToString("N0")</span>
+                    }
+                </div>
+                <div class="d-flex gap-2 justify-content-end">
+                    <form asp-area="Customer" asp-controller="Cart" asp-action="Add" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="gameId" value="@game.GameId" />
+                        <button type="submit" class="btn btn-sm fw-bold" style="background: #e94560; color: #fff;">
+                            🛒 เพิ่มลงตะกร้า
+                        </button>
+                    </form>
+                    <form asp-area="Customer" asp-controller="Wishlist" asp-action="Remove" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="gameId" value="@game.GameId" />
+                        <button type="submit" class="btn btn-sm" style="border: 1px solid #888; color: #888;">✕</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    }
+
+    <!-- เพิ่มทั้งหมดลงตะกร้า -->
+    <div class="rounded-3 p-3 mt-4 d-flex justify-content-between align-items-center" style="background: #16213e; border: 1px solid #e9456022;">
+        <span class="text-secondary">รวม @Model.Count เกมใน Wishlist</span>
+        <form asp-area="Customer" asp-controller="Wishlist" asp-action="AddAllToCart" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="gameIds" value="@System.Text.Json.JsonSerializer.Serialize(Model.Select(g => g.GameId).ToList())" />
+            <button type="submit" class="btn fw-bold" style="background: #e94560; color: #fff;">
+                🛒 เพิ่มทั้งหมดลงตะกร้า
+            </button>
+        </form>
+    </div>
+}

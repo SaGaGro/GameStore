@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GameStore Publisher - @ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #1a1a2e;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: #16213e;
+            width: 250px;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-right: 1px solid #e9456033;
+            padding-top: 20px;
+        }
+        .sidebar .brand {
+            color: #e94560;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            display: block;
+            padding: 0 20px 20px 20px;
+            border-bottom: 1px solid #e9456033;
+        }
+        .sidebar .brand small {
+            display: block;
+            font-size: 11px;
+            color: #888;
+            font-weight: normal;
+            margin-top: 2px;
+        }
+        .sidebar .nav-section {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 20px 20px 8px 20px;
+        }
+        .sidebar .nav-link {
+            color: #aaa;
+            padding: 10px 20px;
+            font-size: 14px;
+            display: block;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+        }
+        .sidebar .nav-link:hover {
+            color: #e94560;
+            background: #e945600a;
+            border-left-color: #e94560;
+        }
+        .sidebar .nav-link.active {
+            color: #e94560;
+            background: #e945600a;
+            border-left-color: #e94560;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        /* Top Bar */
+        .topbar {
+            background: #16213e;
+            border-bottom: 1px solid #e9456033;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .topbar .page-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .topbar .btn-logout {
+            background: transparent;
+            border: 1px solid #e94560;
+            color: #e94560;
+            font-size: 13px;
+            padding: 5px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .topbar .btn-logout:hover {
+            background: #e94560;
+            color: #fff;
+        }
+        .topbar .icon-link {
+            color: #ccc;
+            font-size: 18px;
+            text-decoration: none;
+        }
+        .topbar .icon-link:hover {
+            color: #e94560;
+        }
+
+        /* Content area */
+        .content-area {
+            padding: 24px;
+        }
+
+        /* Cards */
+        .stat-card {
+            background: #16213e;
+            border: 1px solid #e9456022;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        /* Section */
+        .section-title {
+            color: #e94560;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e9456033;
+        }
+
+        /* Table */
+        .table-dark-custom {
+            background: transparent;
+        }
+        .table-dark-custom thead tr {
+            border-bottom: 1px solid #e9456033;
+            font-size: 13px;
+            color: #888;
+        }
+        .table-dark-custom thead th {
+            background: transparent;
+            padding: 12px 16px;
+        }
+        .table-dark-custom tbody tr {
+            border-bottom: 1px solid #ffffff0a;
+        }
+        .table-dark-custom tbody td {
+            background: transparent;
+            padding: 12px 16px;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        /* Badge */
+        .badge-approved { background: #27ae60; }
+        .badge-pending { background: #f39c12; }
+        .badge-rejected { background: #e74c3c; }
+
+        /* Accent */
+        .text-accent { color: #e94560; }
+        a { color: #e94560; text-decoration: none; }
+        a:hover { color: #ff6b81; }
+
+        .form-control, .form-select {
+            background: #0f3460;
+            border: 1px solid #e9456055;
+            color: #fff;
+        }
+        .form-control:focus, .form-select:focus {
+            background: #0f3460;
+            border-color: #e94560;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(233, 69, 96, 0.25);
+        }
+        .form-control::placeholder { color: #8888aa; }
+        .form-select option { background: #0f3460; }
+
+        .btn-accent {
+            background: #e94560;
+            color: #fff;
+            border: none;
+            font-weight: bold;
+        }
+        .btn-accent:hover {
+            background: #c73650;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a class="brand" asp-area="Publisher" asp-controller="Home" asp-action="Index">
+            🎮 GameStore
+            <small>Publisher Dashboard</small>
+        </a>
+
+        <p class="nav-section">หลัก</p>
+        <a class="nav-link" asp-area="Publisher" asp-controller="Home" asp-action="Index">📊 Dashboard</a>
+        <a class="nav-link" asp-area="Publisher" asp-controller="Game" asp-action="Index">🎮 จัดการเกม</a>
+        <a class="nav-link" asp-area="Publisher" asp-controller="Game" asp-action="Create">➕ เพิ่มเกมใหม่</a>
+
+        <p class="nav-section">โปรโมชั่น</p>
+        <a class="nav-link" asp-area="Publisher" asp-controller="Promotion" asp-action="Index">🏷️ โปรโมชั่น</a>
+
+        <p class="nav-section">ข้อมูล</p>
+        <a class="nav-link" asp-area="Publisher" asp-controller="Review" asp-action="Index">💬 รีวิว</a>
+
+        <p class="nav-section">อื่นๆ</p>
+        <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">🛒 ไปหน้าร้าน</a>
+    </div>
+
+    <!-- Main -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="topbar">
+            <span class="page-title">@ViewData["Title"]</span>
+            <div class="d-flex align-items-center gap-3">
+                <span style="font-size: 13px; color: #888;">@(Context.Session.GetString("DisplayName") ?? "Publisher")</span>
+                <a asp-area="Publisher" asp-controller="Home" asp-action="Index" class="icon-link">👤</a>
+                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="btn-logout">ออกจากระบบ</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content-area">
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('submit', function (e) {
+            var msg = e.target.getAttribute('data-confirm');
+            if (msg && !confirm(msg)) e.preventDefault();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+@* @model List<GameStore.ViewModels.Lab9UserViewModel> *@
+
+@* <form asp-action="Lab9User" asp-controller="Account" method="post">
+    UserId <input type="text" class="form-control" name="UserId">
+    <br>
+    Password <input type="text" class="form-control" name="Password">
+    <br>
+    Name <input type="text" class="form-control" name="Name">
+    <br>
+    Lastname <input type="text" class="form-control" name="Lastname">
+    <br>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form> *@
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>UserId</th>
+            <th>Name</th>
+            <th>Lastname</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserId</td>
+                <td>@user.Name</td>
+                <td>@user.Lastname</td>
+                <td><a asp-route-UID="@user.UserId" asp-action="Lab10" asp-controller="Account">Edit</a>
+                <a asp-route-UID="@user.UserId" asp-action="Lab10Remove" asp-controller="Account">Delete</a></td>
+            </tr>
+        }
+    </tbody>Ho
+</table>

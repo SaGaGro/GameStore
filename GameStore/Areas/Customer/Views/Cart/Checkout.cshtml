@@ -1,0 +1,52 @@
+@{
+    ViewData["Title"] = "ชำระเงิน";
+}
+
+<div class="text-center py-5">
+    <div class="rounded-3 p-5 mx-auto" style="background: #16213e; border: 1px solid #e9456022; max-width: 500px;">
+
+        <!-- Processing state (แสดงตอนแรก) -->
+        <div id="processing">
+            <div class="spinner-border mb-3" style="color: #e94560; width: 3rem; height: 3rem;" role="status"></div>
+            <h4 class="fw-bold mb-2">กำลังดำเนินการชำระเงิน...</h4>
+            <p class="text-secondary mb-4">กรุณารอสักครู่</p>
+
+            <div class="rounded-3 p-3 mb-4" style="background: #0f3460; font-size: 14px; text-align: left;">
+                <div id="step1" class="mb-2 text-secondary">⬜ ตรวจสอบรายการ...</div>
+                <div id="step2" class="mb-2 text-secondary">⬜ ดำเนินการชำระเงิน...</div>
+                <div id="step3" class="mb-2 text-secondary">⬜ เพิ่มเกมเข้า Library...</div>
+                <div id="step4" class="text-secondary">⬜ คำนวณแต้มสะสม...</div>
+            </div>
+
+            <p class="text-secondary" style="font-size: 12px;">ยอดรวม: ฿@ViewBag.Total?.ToString("N0")</p>
+        </div>
+
+        <!-- Auto submit form (ซ่อนไว้) -->
+        <form id="placeOrderForm" asp-action="PlaceOrder" method="post" style="display:none;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="pointsToUse" value="@ViewBag.PointsUsed" />
+        </form>
+    </div>
+</div>
+
+<script>
+    async function runSteps() {
+        const steps = [
+            { id: 'step1', delay: 800,  text: '✅ ตรวจสอบรายการแล้ว' },
+            { id: 'step2', delay: 1200, text: '✅ ชำระเงินสำเร็จ' },
+            { id: 'step3', delay: 900,  text: '✅ เพิ่มเกมเข้า Library แล้ว' },
+            { id: 'step4', delay: 600,  text: '✅ คำนวณแต้มสะสมแล้ว' },
+        ];
+
+        for (const step of steps) {
+            await new Promise(r => setTimeout(r, step.delay));
+            document.getElementById(step.id).textContent = step.text;
+            document.getElementById(step.id).style.color = '#27ae60';
+        }
+
+        await new Promise(r => setTimeout(r, 500));
+        document.getElementById('placeOrderForm').submit();
+    }
+
+    runSteps();
+</script>

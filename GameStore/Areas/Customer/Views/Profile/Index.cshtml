@@ -1,0 +1,103 @@
+@model GameStore.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "โปรไฟล์";
+}
+
+<p class="section-title">👤 โปรไฟล์ของฉัน</p>
+
+<div class="row">
+    <!-- ข้อมูลหลัก -->
+    <div class="col-md-4 mb-4">
+        <div class="rounded-3 p-4 text-center" style="background: #16213e; border: 1px solid #e9456022;">
+            <img src="@Model.ProfileImage" alt="Profile" class="rounded-circle mb-3"
+                style="width: 120px; height: 120px; border: 3px solid #e94560;" />
+            <h5 class="fw-bold mb-1">@Model.DisplayName</h5>
+            <p class="text-secondary mb-2" style="font-size: 13px;">@@Model.Username</p>
+            <span class="badge mb-3" style="background: #e94560;">
+                @switch (Model.RoleId)
+                {
+                    case 1: @:Super Admin
+                        break;
+                    case 2: @:Admin
+                        break;
+                    case 3: @:Publisher
+                        break;
+                    default: @:Customer
+                        break;
+                }
+            </span>
+            <p class="text-secondary mb-3" style="font-size: 12px;">
+                สมาชิกตั้งแต่ @Model.CreatedAt.ToString("dd MMM yyyy")
+            </p>
+            <a asp-action="Edit" class="btn btn-sm w-100 mb-2" style="border: 1px solid #e94560; color: #e94560;">
+                ✏️ แก้ไขโปรไฟล์
+            </a>
+            <a asp-action="ApplyPublisher" class="btn btn-sm w-100" style="border: 1px solid #27ae60; color: #27ae60;">
+                🎮 สมัครเป็นผู้ลงเกม
+            </a>
+        </div>
+    </div>
+
+    <!-- สถิติ + ข้อมูล -->
+    <div class="col-md-8">
+        <!-- สถิติ -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="rounded-3 p-3 text-center" style="background: #16213e; border: 1px solid #e9456022;">
+                    <p style="font-size: 28px; margin-bottom: 0;">📚</p>
+                    <p class="fw-bold mb-0" style="font-size: 24px; color: #e94560;">@Model.GamesOwned</p>
+                    <p class="text-secondary mb-0" style="font-size: 12px;">เกมที่มี</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="rounded-3 p-3 text-center" style="background: #16213e; border: 1px solid #e9456022;">
+                    <p style="font-size: 28px; margin-bottom: 0;">♡</p>
+                    <p class="fw-bold mb-0" style="font-size: 24px; color: #e94560;">@Model.WishlistCount</p>
+                    <p class="text-secondary mb-0" style="font-size: 12px;">Wishlist</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="rounded-3 p-3 text-center" style="background: #16213e; border: 1px solid #e9456022;">
+                    <p style="font-size: 28px; margin-bottom: 0;">💬</p>
+                    <p class="fw-bold mb-0" style="font-size: 24px; color: #e94560;">@Model.ReviewCount</p>
+                    <p class="text-secondary mb-0" style="font-size: 12px;">รีวิว</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="rounded-3 p-3 text-center" style="background: #16213e; border: 1px solid #e9456022;">
+                    <p style="font-size: 28px; margin-bottom: 0;">🎯</p>
+                    <p class="fw-bold mb-0" style="font-size: 24px; color: #27ae60;">@Model.PointsBalance</p>
+                    <p class="text-secondary mb-0" style="font-size: 12px;">แต้มสะสม</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ข้อมูลส่วนตัว -->
+        <div class="rounded-3 p-4" style="background: #16213e; border: 1px solid #e9456022;">
+            <h6 class="text-accent mb-3">📋 ข้อมูลส่วนตัว</h6>
+            <table style="width: 100%; font-size: 14px;">
+                <tr>
+                    <td class="text-secondary py-2" style="width: 140px;">ชื่อผู้ใช้</td>
+                    <td class="py-2">@Model.Username</td>
+                </tr>
+                <tr>
+                    <td class="text-secondary py-2">อีเมล</td>
+                    <td class="py-2">@Model.Email</td>
+                </tr>
+                <tr>
+                    <td class="text-secondary py-2">ชื่อที่แสดง</td>
+                    <td class="py-2">@Model.DisplayName</td>
+                </tr>
+                <tr>
+                    <td class="text-secondary py-2">เบอร์โทร</td>
+                    <td class="py-2">@(Model.Phone ?? "-")</td>
+                </tr>
+                <tr>
+                    <td class="text-secondary py-2">ประเทศ</td>
+                    <td class="py-2">@(Model.Country ?? "-")</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

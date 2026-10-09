@@ -1,0 +1,119 @@
+@model List<GameStore.Models.DB.Promotion>
+
+@{
+    ViewData["Title"] = "โปรโมชั่น Platform";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <p class="section-title mb-0">🏷️ โปรโมชั่น Platform</p>
+    <a asp-action="Create" class="btn btn-accent">➕ สร้างโปรโมชั่นใหม่</a>
+</div>
+
+<!-- สถิติ -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">ทั้งหมด</p>
+            <p class="fw-bold mb-0" style="font-size: 28px; color: #e94560;">@Model.Count</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">กำลังใช้งาน</p>
+            <p class="fw-bold mb-0" style="font-size: 28px; color: #27ae60;">@Model.Count(p => p.IsActive == true && p.EndDate >= DateTime.Now && p.StartDate <= DateTime.Now)</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">กำลังจะมา</p>
+            <p class="fw-bold mb-0" style="font-size: 28px; color: #3498db;">@Model.Count(p => p.StartDate > DateTime.Now)</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">สิ้นสุดแล้ว</p>
+            <p class="fw-bold mb-0" style="font-size: 28px; color: #888;">@Model.Count(p => p.EndDate < DateTime.Now)</p>
+        </div>
+    </div>
+</div>
+
+<!-- ตาราง -->
+<div class="rounded-3" style="background: #16213e; border: 1px solid #e9456022; overflow: hidden;">
+    <table class="table table-dark mb-0 table-dark-custom">
+        <thead>
+            <tr>
+                <th>โปรโมชั่น</th>
+                <th>ประเภท</th>
+                <th>เกม/ขอบเขต</th>
+                <th>ส่วนลด</th>
+                <th>ระยะเวลา</th>
+                <th>สถานะ</th>
+                <th>จัดการ</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var promo in Model.OrderByDescending(p => p.StartDate))
+            {
+                <tr>
+                    <td class="fw-bold text-light">@promo.Title</td>
+                    <td>
+                        @switch (promo.Type)
+                        {
+                            case "FestivalSale":
+                                <span class="badge" style="background: #e94560;">ลดเทศกาล</span>
+                                break;
+                            case "FreeGame":
+                                <span class="badge" style="background: #27ae60;">แจกฟรี</span>
+                                break;
+                            case "TrialDiscount":
+                                <span class="badge" style="background: #3498db;">ทดลองเล่น</span>
+                                break;
+                            case "SeriesDiscount":
+                                <span class="badge" style="background: #9b59b6;">ซีรีส์</span>
+                                break;
+                            default:
+                                <span class="badge" style="background: #888;">@promo.Type</span>
+                                break;
+                        }
+                    </td>
+                    <td class="text-secondary">@promo.Game.Title</td>
+                    <td style="color: #e94560; font-weight: bold;">
+                        @if (promo.Type == "FreeGame")
+                        {
+                            <span style="color: #27ae60;">ฟรี</span>
+                        }
+                        else
+                        {
+                            <span>-@promo.DiscountPercent%</span>
+                        }
+                    </td>
+                    <td style="font-size: 13px;">
+                        @promo.StartDate.ToString("dd MMM") → @promo.EndDate.ToString("dd MMM yyyy")
+                    </td>
+                    <td>
+                        @if (promo.EndDate < DateTime.Now)
+                        {
+                            <span class="badge" style="background: #888;">สิ้นสุด</span>
+                        }
+                        else if (promo.StartDate > DateTime.Now)
+                        {
+                            <span class="badge" style="background: #3498db;">กำลังจะมา</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-approved">กำลังใช้งาน</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@promo.PromotionId" class="btn btn-sm" style="border: 1px solid #3498db; color: #3498db;">✏️</a>
+                        <form asp-action="Delete" asp-route-id="@promo.PromotionId" method="post" class="d-inline"
+                              data-confirm="ลบโปรโมชั่นนี้ใช่หรือไม่?">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm" style="border: 1px solid #e74c3c; color: #e74c3c;">🗑️</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

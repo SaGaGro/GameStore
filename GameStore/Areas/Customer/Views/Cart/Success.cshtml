@@ -1,0 +1,57 @@
+@{
+    ViewData["Title"] = "สั่งซื้อสำเร็จ";
+    var pointsEarned = TempData["PointsEarned"] as int? ?? 0;
+    var pointsUsed   = TempData["PointsUsed"]   as int? ?? 0;
+    var orderId      = TempData["OrderId"];
+    var freeGames    = TempData["FreeGames"]    as int? ?? 0;
+}
+
+<div class="text-center py-5">
+    <div class="rounded-3 p-5 mx-auto" style="background: #16213e; border: 1px solid #e9456022; max-width: 520px;">
+        <p style="font-size: 64px;">✅</p>
+        <h3 class="fw-bold mb-2">สั่งซื้อสำเร็จ!</h3>
+        <p class="text-secondary mb-1">ขอบคุณที่ซื้อเกมกับ GameStore</p>
+        <p class="text-secondary mb-3">เกมถูกเพิ่มเข้า Library ของคุณแล้ว</p>
+
+        @if (orderId != null)
+        {
+            <p class="text-secondary mb-3" style="font-size: 13px;">Order #@orderId</p>
+        }
+
+        <!-- สรุปแต้ม -->
+        <div class="rounded-3 p-3 mb-3" style="background: #0f3460;">
+            @if (pointsUsed > 0)
+            {
+                <div class="d-flex justify-content-between mb-2" style="font-size: 13px;">
+                    <span class="text-secondary">🎯 แต้มที่ใช้</span>
+                    <span style="color: #e74c3c;">-@pointsUsed แต้ม</span>
+                </div>
+            }
+            @if (pointsEarned > 0)
+            {
+                <div class="d-flex justify-content-between" style="font-size: 13px;">
+                    <span class="text-secondary">🎯 แต้มที่ได้รับ</span>
+                    <span style="color: #27ae60; font-weight: bold;">+@pointsEarned แต้ม</span>
+                </div>
+            }
+        </div>
+
+        @if (freeGames > 0)
+        {
+            <div class="rounded-3 p-2 mb-3" style="background: #27ae6022; border: 1px solid #27ae6055; font-size: 13px; color: #27ae60;">
+                🎁 ได้รับเกมฟรีจากโปรโมชั่น @freeGames เกม เข้า Library แล้ว!
+            </div>
+        }
+
+        <div class="d-flex gap-2 justify-content-center">
+            <a asp-area="Customer" asp-controller="Library" asp-action="Index"
+               class="btn fw-bold" style="background: #e94560; color: #fff;">
+                📚 ไปที่ Library
+            </a>
+            <a asp-area="Customer" asp-controller="Game" asp-action="Index"
+               class="btn" style="border: 1px solid #e94560; color: #e94560;">
+                🛒 เลือกเกมเพิ่ม
+            </a>
+        </div>
+    </div>
+</div>

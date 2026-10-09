@@ -1,0 +1,37 @@
+@model GameStore.Models.DB.Game
+
+@{
+    ViewData["Title"] = "ลบเกม";
+}
+
+<a asp-action="Index" class="btn btn-sm mb-3" style="border: 1px solid #e94560; color: #e94560;">← กลับ</a>
+
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="rounded-3 p-4 text-center" style="background: #16213e; border: 1px solid #e74c3c33;">
+            <p style="font-size: 48px;">🗑️</p>
+            <h4 class="fw-bold mb-2">ยืนยันการลบ</h4>
+            <p class="text-secondary mb-3">คุณต้องการลบเกมนี้ใช่หรือไม่?</p>
+
+            <div class="rounded-3 p-3 mb-4 d-flex align-items-center" style="background: #0f3460; text-align: left;">
+                <img src="@Model.CoverImage" alt="@Model.Title" class="rounded me-3" style="width: 80px; height: 50px; object-fit: cover;" />
+                <div>
+                    <p class="fw-bold text-light mb-0">@Model.Title</p>
+                    <span class="text-secondary" style="font-size: 12px;">@Model.Genre · ฿@Model.BasePrice.ToString("N0")</span>
+                </div>
+            </div>
+
+            <div class="rounded-3 p-3 mb-4" style="background: #e74c3c11; border: 1px solid #e74c3c33; font-size: 13px; color: #e74c3c;">
+                ⚠️ การลบเกมจะไม่สามารถกู้คืนได้
+            </div>
+
+            <div class="d-flex gap-2">
+                <a asp-action="Index" class="btn flex-fill py-2" style="border: 1px solid #888; color: #888;">ยกเลิก</a>
+                <form asp-action="DeleteConfirmed" method="post" class="flex-fill">
+                    <input type="hidden" name="id" value="@Model.GameId" />
+                    <button type="submit" class="btn w-100 py-2 fw-bold" style="background: #e74c3c; color: #fff;">ยืนยันลบ</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

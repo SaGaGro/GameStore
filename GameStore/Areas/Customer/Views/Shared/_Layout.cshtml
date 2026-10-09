@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GameStore - @ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #1a1a2e;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar-game {
+            background: #16213e;
+            border-bottom: 2px solid #e94560;
+            padding: 12px 0;
+        }
+        .navbar-game .brand {
+            color: #e94560;
+            font-size: 22px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .navbar-game .nav-link {
+            color: #ccc;
+            margin: 0 8px;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .navbar-game .nav-link:hover,
+        .navbar-game .nav-link.active {
+            color: #e94560;
+        }
+        .navbar-game .btn-logout {
+            background: transparent;
+            border: 1px solid #e94560;
+            color: #e94560;
+            font-size: 13px;
+            padding: 5px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .navbar-game .btn-logout:hover {
+            background: #e94560;
+            color: #fff;
+        }
+        .navbar-game .icon-link {
+            color: #ccc;
+            font-size: 18px;
+            text-decoration: none;
+            position: relative;
+        }
+        .navbar-game .icon-link:hover {
+            color: #e94560;
+        }
+        .navbar-game .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: #e94560;
+            color: #fff;
+            font-size: 10px;
+            padding: 1px 5px;
+            border-radius: 50%;
+        }
+
+        /* Search */
+        .search-box {
+            background: #0f3460;
+            border: 1px solid #e9456055;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+        }
+        .search-box:focus {
+            border-color: #e94560;
+            background: #0f3460;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(233, 69, 96, 0.25);
+        }
+        .search-box::placeholder {
+            color: #8888aa;
+        }
+
+        /* Cards */
+        .game-card {
+            background: #16213e;
+            border: 1px solid #e9456022;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .game-card:hover {
+            transform: translateY(-4px);
+            border-color: #e94560;
+        }
+        .game-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .game-card .card-body {
+            padding: 15px;
+        }
+        .game-card .game-title {
+            color: #fff;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .game-card .game-genre {
+            color: #8888aa;
+            font-size: 12px;
+        }
+        .game-card .game-price {
+            color: #e94560;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 8px;
+        }
+        .game-card .game-price-old {
+            color: #888;
+            text-decoration: line-through;
+            font-size: 13px;
+            margin-right: 6px;
+        }
+        .game-card .badge-free {
+            background: #27ae60;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        .game-card .badge-sale {
+            background: #e94560;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        .game-card .badge-earlybird {
+            background: #f39c12;
+            color: #000;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        /* Section */
+        .section-title {
+            color: #e94560;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e9456033;
+        }
+
+        /* Footer */
+        .footer-game {
+            background: #16213e;
+            border-top: 1px solid #e9456033;
+            padding: 20px 0;
+            margin-top: 50px;
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+        }
+
+        /* Accent */
+        .text-accent { color: #e94560; }
+        a { color: #e94560; text-decoration: none; }
+        a:hover { color: #ff6b81; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar-game">
+        <div class="container d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <a class="brand" asp-area="Customer" asp-controller="Home" asp-action="Index">🎮 GameStore</a>
+                <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">หน้าแรก</a>
+                <a class="nav-link" asp-area="Customer" asp-controller="Game" asp-action="Index">ร้านค้า</a>
+                <a class="nav-link" asp-area="Customer" asp-controller="Wishlist" asp-action="Index">Wishlist</a>
+                <a class="nav-link" asp-area="Customer" asp-controller="Library" asp-action="Index">Library</a>
+                <a class="nav-link" asp-area="Customer" asp-controller="Point" asp-action="Index">แต้มสะสม</a>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <input type="text" class="form-control search-box" placeholder="🔍 ค้นหาเกม..." style="width: 220px;" />
+                @{
+                    var cartJson = Context.Session.GetString("Cart");
+                    var cartCount = 0;
+                    if (cartJson != null)
+                    {
+                        try { cartCount = System.Text.Json.JsonSerializer.Deserialize<List<int>>(cartJson)?.Count ?? 0; }
+                        catch { }
+                    }
+                }
+                <a asp-area="Customer" asp-controller="Cart" asp-action="Index" class="icon-link">
+                    🛒
+                    @if (cartCount > 0)
+                    {
+                        <span class="cart-badge">@cartCount</span>
+                    }
+                </a>
+                <a asp-area="Customer" asp-controller="Profile" asp-action="Index" class="icon-link">
+                    👤
+                </a>
+                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="btn-logout">ออกจากระบบ</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="container mt-4">
+        @RenderBody()
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-game">
+        <p>© 2026 GameStore. All rights reserved.</p>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

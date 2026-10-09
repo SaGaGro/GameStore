@@ -1,0 +1,78 @@
+@model List<GameStore.Models.DB.Publisherrequest>
+
+@{
+    ViewData["Title"] = "คำขอ Publisher";
+}
+
+<p class="section-title">📩 คำขอสมัคร Publisher</p>
+
+<!-- รอตรวจสอบ -->
+<h6 class="text-accent mb-3">⏳ รอตรวจสอบ (@Model.Count(r => r.Status == "Pending"))</h6>
+
+@foreach (var req in Model.Where(r => r.Status == "Pending"))
+{
+    <div class="rounded-3 p-4 mb-3" style="background: #16213e; border: 1px solid #f39c1233;">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+                <h5 class="fw-bold text-light mb-1">@req.CompanyName</h5>
+                <span class="text-secondary" style="font-size: 13px;">โดย @(req.User.DisplayName ?? req.User.Username) (@req.User.Email)</span>
+                <span class="text-secondary ms-2" style="font-size: 12px;">· ส่งเมื่อ @(req.RequestedAt?.ToString("dd MMM yyyy") ?? "-")</span>
+            </div>
+            <span class="badge badge-pending">รอตรวจสอบ</span>
+        </div>
+
+        <div class="rounded-3 p-3 mb-3" style="background: #0f3460;">
+            <p class="mb-1" style="font-size: 13px;"><span class="text-secondary">รายละเอียด:</span> <span class="text-light">@req.Description</span></p>
+            <p class="mb-0" style="font-size: 13px;"><span class="text-secondary">ช่องทางติดต่อ:</span> <span class="text-light">@req.ContactInfo</span></p>
+        </div>
+
+        @{ var companyName = req.CompanyName; }
+        <div class="d-flex gap-2">
+            <form asp-action="Approve" asp-controller="Publisher" method="post" class="d-inline"
+                  data-confirm="อนุมัติคำขอของ &quot;@companyName&quot; ใช่หรือไม่?">
+                <input type="hidden" name="id" value="@req.RequestId" />
+                <button type="submit" class="btn btn-sm fw-bold px-4" style="background: #27ae60; color: #fff;">✓ อนุมัติ</button>
+            </form>
+            <form asp-action="Reject" asp-controller="Publisher" method="post" class="d-inline"
+                  data-confirm="ปฏิเสธคำขอของ &quot;@companyName&quot; ใช่หรือไม่?">
+                <input type="hidden" name="id" value="@req.RequestId" />
+                <button type="submit" class="btn btn-sm fw-bold px-4" style="background: #e74c3c; color: #fff;">✕ ปฏิเสธ</button>
+            </form>
+        </div>
+    </div>
+}
+
+<!-- ประวัติ -->
+<h6 class="text-accent mb-3 mt-4">📋 ประวัติ</h6>
+<div class="rounded-3" style="background: #16213e; border: 1px solid #e9456022; overflow: hidden;">
+    <table class="table table-dark mb-0 table-dark-custom">
+        <thead>
+            <tr>
+                <th>ค่ายเกม</th>
+                <th>ผู้สมัคร</th>
+                <th>วันที่ส่ง</th>
+                <th>สถานะ</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var req in Model.Where(r => r.Status != "Pending"))
+            {
+                <tr>
+                    <td class="fw-bold text-light">@req.CompanyName</td>
+                    <td class="text-secondary">@(req.User.DisplayName ?? req.User.Username)</td>
+                    <td class="text-secondary" style="font-size: 13px;">@(req.RequestedAt?.ToString("dd MMM yyyy") ?? "-")</td>
+                    <td>
+                        @if (req.Status == "Approved")
+                        {
+                            <span class="badge badge-approved">อนุมัติแล้ว</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-rejected">ปฏิเสธ</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

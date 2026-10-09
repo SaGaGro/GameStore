@@ -1,0 +1,124 @@
+@model GameStore.ViewModels.GameViewModel
+
+@{
+    ViewData["Title"] = "เพิ่มเกมใหม่";
+}
+
+<a asp-action="Index" class="btn btn-sm mb-3" style="border: 1px solid #e94560; color: #e94560;">← กลับ</a>
+
+<p class="section-title">➕ เพิ่มเกมใหม่</p>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="rounded-3 p-4" style="background: #16213e; border: 1px solid #e9456022;">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label text-light">ชื่อเกม</label>
+                    <input asp-for="Title" class="form-control" placeholder="ชื่อเกมของคุณ" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label text-light">รายละเอียด</label>
+                    <textarea asp-for="Description" class="form-control" rows="5" placeholder="อธิบายเกี่ยวกับเกมของคุณ"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Genre" class="form-label text-light">หมวดหมู่</label>
+                        <select asp-for="Genre" class="form-select">
+                            <option value="">-- เลือก --</option>
+                            <option value="Action RPG">Action RPG</option>
+                            <option value="Adventure">Adventure</option>
+                            <option value="Racing">Racing</option>
+                            <option value="Strategy">Strategy</option>
+                            <option value="MMORPG">MMORPG</option>
+                            <option value="Roguelike">Roguelike</option>
+                            <option value="MOBA">MOBA</option>
+                            <option value="Simulation">Simulation</option>
+                            <option value="Horror">Horror</option>
+                            <option value="Fighting">Fighting</option>
+                            <option value="RPG">RPG</option>
+                            <option value="Puzzle">Puzzle</option>
+                            <option value="Sports">Sports</option>
+                        </select>
+                        <span asp-validation-for="Genre" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Price" class="form-label text-light">ราคา (฿)</label>
+                        <input asp-for="Price" type="number" class="form-control" placeholder="0" />
+                        <span asp-validation-for="Price" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="ReleasedAt" class="form-label text-light">วันวางจำหน่าย</label>
+                        <input asp-for="ReleasedAt" type="date" class="form-control" />
+                        <span asp-validation-for="ReleasedAt" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CoverImage" class="form-label text-light">รูปปก</label>
+                    <input asp-for="CoverImage" type="file" class="form-control" accept="image/*" />
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input asp-for="IsFree" class="form-check-input" type="checkbox" />
+                            <label asp-for="IsFree" class="form-check-label text-light">เกมฟรี</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input asp-for="HasTrial" class="form-check-input" type="checkbox" />
+                            <label asp-for="HasTrial" class="form-check-label text-light">เปิดให้ทดลองเล่น</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label asp-for="TrialHours" class="form-label text-light">เวลาทดลอง (ชม.)</label>
+                        <input asp-for="TrialHours" type="number" class="form-control" placeholder="เช่น 5" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="TrialDiscount" class="form-label text-light">ส่วนลดหลังทดลอง (%)</label>
+                        <input asp-for="TrialDiscount" type="number" class="form-control" placeholder="เช่น 10" />
+                    </div>
+                </div>
+
+                <hr style="border-color: #e9456033;" />
+                <p class="text-accent mb-2" style="font-size: 13px;">📦 Series (ไม่บังคับ)</p>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="SeriesName" class="form-label text-light">ชื่อ Series</label>
+                        <input asp-for="SeriesName" class="form-control" placeholder="เช่น Dragon Quest" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="SeriesOrder" class="form-label text-light">ลำดับภาค</label>
+                        <input asp-for="SeriesOrder" type="number" class="form-control" placeholder="เช่น 3" />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-accent w-100 py-2">📩 ส่งเกมเพื่อรอการอนุมัติ</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Info -->
+    <div class="col-md-4">
+        <div class="rounded-3 p-4" style="background: #16213e; border: 1px solid #e9456022;">
+            <h6 class="text-accent mb-3">📌 หมายเหตุ</h6>
+            <ul style="font-size: 13px; color: #aaa; padding-left: 18px;">
+                <li class="mb-2">เกมจะถูกส่งไปให้ Admin ตรวจสอบก่อนเผยแพร่</li>
+                <li class="mb-2">รูปปกแนะนำขนาด 400x250 px</li>
+                <li class="mb-2">ถ้าเป็นเกมฟรี ราคาจะถูกตั้งเป็น 0 อัตโนมัติ</li>
+                <li class="mb-2">Trial — ผู้เล่นที่เล่นครบจะได้ส่วนลดตอนเกมเปิดตัว</li>
+                <li>Series — ใช้สำหรับโปรโมชั่นซื้อภาคใหม่ลด 30% ภาคเก่า</li>
+            </ul>
+        </div>
+    </div>
+</div>

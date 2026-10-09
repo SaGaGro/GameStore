@@ -1,0 +1,46 @@
+@model List<GameStore.Models.DB.Game>
+
+@{
+    ViewData["Title"] = "Library";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <p class="section-title mb-0">📚 Library ของฉัน</p>
+    <span style="color: #888;">@Model.Count เกม</span>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="text-center py-5">
+        <p style="font-size: 48px;">📚</p>
+        <p class="text-secondary">ยังไม่มีเกมใน Library</p>
+        <a asp-area="Customer" asp-controller="Game" asp-action="Index" class="btn mt-2" style="background: #e94560; color: #fff;">
+            ไปซื้อเกม
+        </a>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var game in Model)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="game-card">
+                    <a asp-area="Customer" asp-controller="Game" asp-action="Detail" asp-route-id="@game.GameId" style="text-decoration: none;">
+                        <img src="@game.CoverImage" alt="@game.Title" />
+                    </a>
+                    <div class="card-body">
+                        <span class="game-genre">@game.Genre</span>
+                        <p class="game-title mt-1">@game.Title</p>
+                        <div class="mt-1 mb-2" style="color: #f1c40f; font-size: 12px;">
+                            ⭐ @(game.Rating?.ToString("F1") ?? "0.0") /5
+                        </div>
+                        <button class="btn btn-sm fw-bold w-100" style="background: #27ae60; color: #fff;">
+                            ▶ เล่นเกม
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,132 @@
+@model List<GameStore.Models.DB.Pointhistory>
+
+@{
+    ViewData["Title"] = "แต้มสะสม";
+}
+
+<p class="section-title">🎯 แต้มสะสมของฉัน</p>
+
+<!-- สรุปแต้ม -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="rounded-3 p-3 text-center" style="background: #16213e; border: 1px solid #e9456022;">
+            <p class="text-secondary mb-1" style="font-size: 13px;">แต้มคงเหลือ</p>
+            <p class="fw-bold mb-0" style="font-size: 32px; color: #e94560;">@ViewBag.Balance</p>
+            <p class="text-secondary mb-0" style="font-size: 12px;">= ฿@(((decimal)ViewBag.Balance * 0.5m).ToString("N0"))</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="rounded-3 p-3 text-center" style="background: #16213e; border: 1px solid #e9456022;">
+            <p class="text-secondary mb-1" style="font-size: 13px;">สะสมทั้งหมด</p>
+            <p class="fw-bold mb-0" style="font-size: 32px; color: #27ae60;">@ViewBag.TotalEarned</p>
+            <p class="text-secondary mb-0" style="font-size: 12px;">แต้ม</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="rounded-3 p-3 text-center" style="background: #16213e; border: 1px solid #e9456022;">
+            <p class="text-secondary mb-1" style="font-size: 13px;">ใช้ไปแล้ว</p>
+            <p class="fw-bold mb-0" style="font-size: 32px; color: #f39c12;">@ViewBag.TotalUsed</p>
+            <p class="text-secondary mb-0" style="font-size: 12px;">แต้ม</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="rounded-3 p-3 text-center" style="background: #16213e; border: 1px solid #e9456022;">
+            <p class="text-secondary mb-1" style="font-size: 13px;">หมดอายุแล้ว</p>
+            <p class="fw-bold mb-0" style="font-size: 32px; color: #888;">@ViewBag.TotalExpired</p>
+            <p class="text-secondary mb-0" style="font-size: 12px;">แต้ม</p>
+        </div>
+    </div>
+</div>
+
+<!-- แจ้งเตือนแต้มใกล้หมดอายุ -->
+@if (ViewBag.ExpiringPoints > 0)
+{
+    <div class="rounded-3 p-3 mb-4 d-flex align-items-center" style="background: #f39c1222; border: 1px solid #f39c1255;">
+        <span style="font-size: 24px; margin-right: 12px;">⚠️</span>
+        <div>
+            <span class="fw-bold" style="color: #f39c12;">แต้มใกล้หมดอายุ!</span>
+            <span class="text-light"> คุณมี @ViewBag.ExpiringPoints แต้มที่จะหมดอายุภายในวันที่ @ViewBag.ExpiringDate</span>
+        </div>
+    </div>
+}
+
+<!-- เงื่อนไข -->
+<div class="rounded-3 p-3 mb-4" style="background: #16213e; border: 1px solid #e9456022;">
+    <h6 class="text-accent mb-2">📌 เงื่อนไขการสะสมแต้ม</h6>
+    <div class="row" style="font-size: 13px; color: #aaa;">
+        <div class="col-md-3">
+            <span class="text-light fw-bold">อัตราสะสม:</span><br/>
+            ซื้อทุก ฿10 = 1 แต้ม
+        </div>
+        <div class="col-md-3">
+            <span class="text-light fw-bold">มูลค่าแต้ม:</span><br/>
+            1 แต้ม = ฿0.50
+        </div>
+        <div class="col-md-3">
+            <span class="text-light fw-bold">ใช้ได้สูงสุด:</span><br/>
+            เท่ากับยอดที่ต้องจ่าย
+        </div>
+        <div class="col-md-3">
+            <span class="text-light fw-bold">หมดอายุ:</span><br/>
+            ไม่มีวันหมดอายุ
+        </div>
+    </div>
+</div>
+
+<!-- ประวัติ -->
+<p class="section-title">📋 ประวัติแต้ม</p>
+
+<div class="rounded-3" style="background: #16213e; border: 1px solid #e9456022; overflow: hidden;">
+    <table class="table table-dark mb-0" style="background: transparent;">
+        <thead>
+            <tr style="border-bottom: 1px solid #e9456033; font-size: 13px; color: #888;">
+                <th style="background: transparent; padding: 12px 16px;">วันที่</th>
+                <th style="background: transparent;">รายละเอียด</th>
+                <th style="background: transparent;">ประเภท</th>
+                <th style="background: transparent; text-align: right;">แต้ม</th>
+                <th style="background: transparent; text-align: right;">หมดอายุ</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr style="border-bottom: 1px solid #ffffff0a; font-size: 14px;">
+                    <td style="background: transparent; padding: 12px 16px; color: #aaa;">
+                        @(item.CreatedAt?.ToString("dd MMM yyyy") ?? "-")
+                    </td>
+                    <td style="background: transparent; color: #ddd;">
+                        @item.Description
+                    </td>
+                    <td style="background: transparent;">
+                        @if (item.Type == "Earned")
+                        {
+                            <span class="badge" style="background: #27ae60;">ได้รับ</span>
+                        }
+                        else if (item.Type == "Used")
+                        {
+                            <span class="badge" style="background: #e94560;">ใช้แต้ม</span>
+                        }
+                        else
+                        {
+                            <span class="badge" style="background: #888;">หมดอายุ</span>
+                        }
+                    </td>
+                    <td style="background: transparent; text-align: right; font-weight: bold;
+                        color: @(item.Type == "Earned" ? "#27ae60" : "#e94560");">
+                        @(item.Points > 0 ? "+" : "")@item.Points
+                    </td>
+                    <td style="background: transparent; text-align: right; color: #888; font-size: 12px;">
+                        @if (item.ExpiresAt != null)
+                        {
+                            @item.ExpiresAt.Value.ToString("dd MMM yyyy")
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

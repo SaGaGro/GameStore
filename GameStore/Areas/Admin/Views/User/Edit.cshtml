@@ -1,0 +1,54 @@
+@model GameStore.Models.DB.User
+
+@{
+    ViewData["Title"] = "แก้ไขผู้ใช้";
+}
+
+<p class="section-title">แก้ไขผู้ใช้</p>
+
+<div class="rounded-3 p-4" style="background: #16213e; border: 1px solid #e9456022; max-width: 600px;">
+    <form asp-action="Edit" asp-controller="User" asp-area="Admin" method="post">
+        <input type="hidden" asp-for="UserId" />
+
+        <div class="mb-3">
+            <label class="form-label text-light">Username</label>
+            <input type="text" class="form-control" asp-for="Username">
+        </div>
+        <div class="mb-3">
+            <label class="form-label text-light">Email</label>
+            <input type="text" class="form-control" asp-for="Email">
+        </div>
+        <div class="mb-3">
+            <label class="form-label text-light">DisplayName</label>
+            <input type="text" class="form-control" asp-for="DisplayName">
+        </div>
+        <div class="mb-3">
+            <label class="form-label text-light">ประเทศ</label>
+            <select class="form-select" asp-for="Country">
+                <option value="">-- เลือกประเทศ --</option>
+                <option value="TH">🇹🇭 ไทย</option>
+                <option value="US">🇺🇸 สหรัฐอเมริกา</option>
+                <option value="JP">🇯🇵 ญี่ปุ่น</option>
+                <option value="KR">🇰🇷 เกาหลีใต้</option>
+                <option value="CN">🇨🇳 จีน</option>
+                <option value="GB">🇬🇧 สหราชอาณาจักร</option>
+                <option value="DE">🇩🇪 เยอรมนี</option>
+                <option value="FR">🇫🇷 ฝรั่งเศส</option>
+                <option value="SG">🇸🇬 สิงคโปร์</option>
+                <option value="AU">🇦🇺 ออสเตรเลีย</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label text-light">Role</label>
+            <select class="form-select" asp-for="RoleId">
+                <option value="1">SuperAdmin</option>
+                <option value="2">Admin</option>
+                <option value="3">Publisher</option>
+                <option value="4">Customer</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-sm" style="background: #e94560; color: white;">บันทึก</button>
+        <a asp-action="Index" class="btn btn-sm" style="border: 1px solid #aaa; color: #aaa;">ยกเลิก</a>
+    </form>
+</div>

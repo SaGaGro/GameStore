@@ -1,0 +1,117 @@
+@model GameStore.ViewModels.GameViewModel
+
+@{
+    ViewData["Title"] = "แก้ไขเกม";
+}
+
+<a asp-action="Index" class="btn btn-sm mb-3" style="border: 1px solid #e94560; color: #e94560;">← กลับ</a>
+
+<p class="section-title">✏️ แก้ไข: @Model.Title</p>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="rounded-3 p-4" style="background: #16213e; border: 1px solid #e9456022;">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="GameId" />
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label text-light">ชื่อเกม</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label text-light">รายละเอียด</label>
+                    <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Genre" class="form-label text-light">หมวดหมู่</label>
+                        <select asp-for="Genre" class="form-select">
+                            <option value="">-- เลือก --</option>
+                            <option value="Action RPG">Action RPG</option>
+                            <option value="Adventure">Adventure</option>
+                            <option value="Racing">Racing</option>
+                            <option value="Strategy">Strategy</option>
+                            <option value="MMORPG">MMORPG</option>
+                            <option value="Roguelike">Roguelike</option>
+                            <option value="MOBA">MOBA</option>
+                            <option value="Simulation">Simulation</option>
+                            <option value="Horror">Horror</option>
+                            <option value="Fighting">Fighting</option>
+                            <option value="RPG">RPG</option>
+                            <option value="Puzzle">Puzzle</option>
+                            <option value="Sports">Sports</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Price" class="form-label text-light">ราคา (฿)</label>
+                        <input asp-for="Price" type="number" class="form-control" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="ReleasedAt" class="form-label text-light">วันวางจำหน่าย</label>
+                        <input asp-for="ReleasedAt" type="date" class="form-control" />
+                    </div>
+                </div>
+
+                <!-- รูปปก -->
+                <div class="mb-3">
+                    <label class="form-label text-light">รูปปกปัจจุบัน</label>
+                    @if (!string.IsNullOrEmpty(Model.ExistingCoverImage))
+                    {
+                        <div class="mb-2">
+                            <img src="@Model.ExistingCoverImage" class="rounded" style="width: 200px; height: 120px; object-fit: cover;" />
+                        </div>
+                    }
+                    <input asp-for="CoverImage" type="file" class="form-control" accept="image/*" />
+                    <small class="text-secondary">อัปโหลดใหม่เพื่อเปลี่ยนรูปปก</small>
+                    <input type="hidden" asp-for="ExistingCoverImage" />
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input asp-for="IsFree" class="form-check-input" type="checkbox" />
+                            <label asp-for="IsFree" class="form-check-label text-light">เกมฟรี</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input asp-for="HasTrial" class="form-check-input" type="checkbox" />
+                            <label asp-for="HasTrial" class="form-check-label text-light">เปิดให้ทดลองเล่น</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label asp-for="TrialHours" class="form-label text-light">เวลาทดลอง (ชม.)</label>
+                        <input asp-for="TrialHours" type="number" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="TrialDiscount" class="form-label text-light">ส่วนลดหลังทดลอง (%)</label>
+                        <input asp-for="TrialDiscount" type="number" class="form-control" />
+                    </div>
+                </div>
+
+                <hr style="border-color: #e9456033;" />
+                <p class="text-accent mb-2" style="font-size: 13px;">📦 Series</p>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="SeriesName" class="form-label text-light">ชื่อ Series</label>
+                        <input asp-for="SeriesName" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="SeriesOrder" class="form-label text-light">ลำดับภาค</label>
+                        <input asp-for="SeriesOrder" type="number" class="form-control" />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-accent w-100 py-2">💾 บันทึก</button>
+            </form>
+        </div>
+    </div>
+</div>

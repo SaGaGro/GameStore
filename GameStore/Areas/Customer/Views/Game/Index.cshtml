@@ -1,0 +1,148 @@
+@model List<GameStore.Models.DB.Game>
+
+@{
+    ViewData["Title"] = "ร้านค้า";
+}
+
+<!-- Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <p class="section-title mb-0">🛒 ร้านค้า</p>
+    <span style="color: #888;">พบ @Model.Count เกม</span>
+</div>
+
+<!-- Filter Bar -->
+<div class="rounded-3 p-3 mb-4" style="background: #16213e; border: 1px solid #e9456022;">
+    <form method="get" asp-action="Index" class="row g-2 align-items-end">
+
+        <!-- ค้นหา -->
+        <div class="col-md-3">
+            <label class="form-label text-secondary" style="font-size: 12px;">ค้นหา</label>
+            <input type="text" name="search" value="@ViewBag.Search" class="form-control search-box" placeholder="🔍 ชื่อเกม..." />
+        </div>
+
+        <!-- หมวดหมู่ -->
+        <div class="col-md-2">
+            <label class="form-label text-secondary" style="font-size: 12px;">หมวดหมู่</label>
+            <select name="genre" class="form-select" style="background: #0f3460; border: 1px solid #e9456055; color: #fff;">
+                <option value="all">ทั้งหมด</option>
+                @foreach (var g in (List<string>)ViewBag.Genres)
+                {
+                    <option value="@g" selected="@(ViewBag.Genre == g)">@g</option>
+                }
+            </select>
+        </div>
+
+        <!-- ช่วงราคา -->
+        <div class="col-md-2">
+            <label class="form-label text-secondary" style="font-size: 12px;">ราคา</label>
+            <select name="priceRange" class="form-select" style="background: #0f3460; border: 1px solid #e9456055; color: #fff;">
+                <option value="">ทั้งหมด</option>
+                <option value="free" selected="@(ViewBag.PriceRange == "free")">ฟรี</option>
+                <option value="under500" selected="@(ViewBag.PriceRange == "under500")">ต่ำกว่า ฿500</option>
+                <option value="500to1000" selected="@(ViewBag.PriceRange == "500to1000")">฿500 - ฿1,000</option>
+                <option value="over1000" selected="@(ViewBag.PriceRange == "over1000")">มากกว่า ฿1,000</option>
+            </select>
+        </div>
+
+        <!-- เรียงตาม -->
+        <div class="col-md-2">
+            <label class="form-label text-secondary" style="font-size: 12px;">เรียงตาม</label>
+            <select name="sort" class="form-select" style="background: #0f3460; border: 1px solid #e9456055; color: #fff;">
+                <option value="bestseller" selected="@(ViewBag.Sort == "bestseller")">ขายดี</option>
+                <option value="rating" selected="@(ViewBag.Sort == "rating")">คะแนนสูง</option>
+                <option value="price_asc" selected="@(ViewBag.Sort == "price_asc")">ราคาต่ำ → สูง</option>
+                <option value="price_desc" selected="@(ViewBag.Sort == "price_desc")">ราคาสูง → ต่ำ</option>
+                <option value="newest" selected="@(ViewBag.Sort == "newest")">ใหม่ล่าสุด</option>
+            </select>
+        </div>
+
+        <!-- ปุ่มค้นหา + ล้าง -->
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn fw-bold" style="background: #e94560; color: #fff; flex: 1;">ค้นหา</button>
+            <a asp-action="Index" class="btn" style="border: 1px solid #e94560; color: #e94560; flex: 1; text-align: center;">ล้าง</a>
+        </div>
+
+    </form>
+</div>
+
+<!-- Game Grid -->
+@if (Model.Count == 0)
+{
+    <div class="text-center py-5">
+        <p style="font-size: 48px;">🎮</p>
+        <p class="text-secondary">ไม่พบเกมที่ค้นหา</p>
+        <a asp-action="Index" class="btn mt-2" style="background: #e94560; color: #fff;">ดูเกมทั้งหมด</a>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var game in Model)
+        {
+            var isEarlyBird = game.ReleaseDate > DateTime.Now && game.DiscountPercent > 0;
+            var discountedPrice = game.DiscountPercent > 0
+                ? game.BasePrice - (game.BasePrice * game.DiscountPercent.Value / 100)
+                : game.BasePrice;
+
+            <div class="col-md-3 mb-4">
+                <a asp-action="Detail" asp-route-id="@game.GameId" style="text-decoration: none;">
+                    <div class="game-card">
+                        <img src="@game.CoverImage" alt="@game.Title" />
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <span class="game-genre">@game.Genre</span>
+                                @if (isEarlyBird)
+                                {
+                                    <span class="badge-earlybird">⚡ Pre-order -@game.DiscountPercent%</span>
+                                }
+                                else if (game.DiscountPercent > 0)
+                                {
+                                    <span class="badge-sale">-@game.DiscountPercent%</span>
+                                }
+                                else if (game.IsFree == true)
+                                {
+                                    <span class="badge-free">ฟรี</span>
+                                }
+                                else if (game.HasTrial == true)
+                                {
+                                    <span class="badge-free">ทดลอง</span>
+                                }
+                            </div>
+                            <p class="game-title mt-1">@game.Title</p>
+                            <div>
+                                @if (game.IsFree == true)
+                                {
+                                    <span class="game-price">ฟรี</span>
+                                }
+                                else if (game.DiscountPercent > 0)
+                                {
+                                    <span class="game-price-old">฿@game.BasePrice.ToString("N0")</span>
+                                    <span class="game-price">฿@discountedPrice.ToString("N0")</span>
+                                }
+                                else
+                                {
+                                    <span class="game-price">฿@game.BasePrice.ToString("N0")</span>
+                                }
+                            </div>
+                            <div class="mt-1" style="color: #f1c40f; font-size: 12px;">
+                                ⭐ @(game.Rating?.ToString("F1") ?? "0.0") /5 · ขายแล้ว @(game.SoldCount?.ToString("N0") ?? "0") ชุด
+                            </div>
+                            @if (isEarlyBird)
+                            {
+                                <div class="mt-1" style="font-size: 11px; color: #f39c12;">
+                                    🗓️ วางจำหน่าย @game.ReleaseDate!.Value.ToString("dd MMM yyyy")
+                                </div>
+                            }
+                            else if (game.HasTrial == true)
+                            {
+                                <div class="mt-1" style="font-size: 11px; color: #27ae60;">
+                                    🎮 ทดลองเล่นฟรี @game.TrialHours ชม.
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+}

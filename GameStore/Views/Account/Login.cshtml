@@ -1,0 +1,91 @@
+@model GameStore.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "เข้าสู่ระบบ";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GameStore - เข้าสู่ระบบ</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        body {
+            background-color: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .form-control::placeholder {
+            color: #8888aa;
+            }
+        .login-card {
+            background: #16213e;
+            border: 1px solid #e9456033;
+            border-radius: 12px;
+        }
+        .form-control, .form-check-input {
+            background: #0f3460;
+            border: 1px solid #e9456055;
+            color: #fff;
+        }
+        .form-control:focus {
+            background: #0f3460;
+            border-color: #e94560;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(233, 69, 96, 0.25);
+        }
+        .btn-primary {
+            background: #e94560;
+            border: none;
+        }
+        .btn-primary:hover {
+            background: #c73650;
+        }
+        .text-accent { color: #e94560; }
+        a { color: #e94560; }
+        a:hover { color: #ff6b81; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="login-card p-4">
+                    <h2 class="text-center text-accent fw-bold mb-1">🎮 GameStore</h2>
+                    <p class="text-center text-secondary mb-4">เข้าสู่ระบบ</p>
+
+                    <form asp-action="Login" method="post">
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label text-light">อีเมล</label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="กรอกอีเมล" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label text-light">รหัสผ่าน</label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="กรอกรหัสผ่าน" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+                            <label asp-for="RememberMe" class="form-check-label text-light">จดจำฉัน</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 fw-bold py-2">เข้าสู่ระบบ</button>
+                    </form>
+
+                    <p class="text-center text-secondary mt-3 mb-0">
+                        ยังไม่มีบัญชี? <a asp-action="Register">สมัครสมาชิก</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

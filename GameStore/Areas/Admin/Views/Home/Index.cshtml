@@ -1,0 +1,93 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Stats -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">ผู้ใช้ทั้งหมด</p>
+            <p class="fw-bold mb-0" style="font-size: 28px; color: #e94560;">@ViewBag.TotalUsers.ToString("N0")</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">Publisher</p>
+            <p class="fw-bold mb-0" style="font-size: 28px; color: #3498db;">@ViewBag.TotalPublishers</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">เกมทั้งหมด</p>
+            <p class="fw-bold mb-0" style="font-size: 28px; color: #27ae60;">@ViewBag.TotalGames</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">รายได้รวม (฿)</p>
+            <p class="fw-bold mb-0" style="font-size: 28px; color: #f39c12;">@ViewBag.TotalRevenue.ToString("N0")</p>
+        </div>
+    </div>
+</div>
+
+<!-- รอดำเนินการ -->
+<p class="section-title">⏳ รอดำเนินการ</p>
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="stat-card d-flex align-items-center justify-content-between">
+            <div>
+                <p class="text-secondary mb-0" style="font-size: 13px;">เกมรออนุมัติ</p>
+                <p class="fw-bold mb-0" style="font-size: 24px; color: #f39c12;">@ViewBag.PendingGames</p>
+            </div>
+            <a asp-controller="Game" asp-action="Index" class="btn btn-sm btn-accent">ดูทั้งหมด →</a>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="stat-card d-flex align-items-center justify-content-between">
+            <div>
+                <p class="text-secondary mb-0" style="font-size: 13px;">คำขอ Publisher</p>
+                <p class="fw-bold mb-0" style="font-size: 24px; color: #f39c12;">@ViewBag.PendingPublishers</p>
+            </div>
+            <a asp-controller="Publisher" asp-action="Index" class="btn btn-sm btn-accent">ดูทั้งหมด →</a>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="stat-card d-flex align-items-center justify-content-between">
+            <div>
+                <p class="text-secondary mb-0" style="font-size: 13px;">โปรโมชั่นกำลังใช้งาน</p>
+                <p class="fw-bold mb-0" style="font-size: 24px; color: #27ae60;">@ViewBag.ActivePromotions</p>
+            </div>
+            <a asp-controller="Promotion" asp-action="Index" class="btn btn-sm btn-accent">ดูทั้งหมด →</a>
+        </div>
+    </div>
+</div>
+
+<!-- กิจกรรมล่าสุด -->
+<p class="section-title">📋 กิจกรรมล่าสุด</p>
+<div class="rounded-3 p-3" style="background: #16213e; border: 1px solid #e9456022;">
+    <div class="d-flex align-items-center py-2" style="border-bottom: 1px solid #ffffff0a;">
+        <span class="badge badge-pending me-2">Publisher</span>
+        <span class="text-light flex-fill">คำขอสมัคร Publisher ใหม่จาก "Awesome Studio"</span>
+        <span class="text-secondary" style="font-size: 12px;">1 ชั่วโมงที่แล้ว</span>
+    </div>
+    <div class="d-flex align-items-center py-2" style="border-bottom: 1px solid #ffffff0a;">
+        <span class="badge badge-pending me-2">เกม</span>
+        <span class="text-light flex-fill">เกม "Mystic Legends" รออนุมัติจาก Mock Studio</span>
+        <span class="text-secondary" style="font-size: 12px;">3 ชั่วโมงที่แล้ว</span>
+    </div>
+    <div class="d-flex align-items-center py-2" style="border-bottom: 1px solid #ffffff0a;">
+        <span class="badge badge-approved me-2">อนุมัติ</span>
+        <span class="text-light flex-fill">เกม "Farm Life Story" ได้รับการอนุมัติแล้ว</span>
+        <span class="text-secondary" style="font-size: 12px;">1 วันที่แล้ว</span>
+    </div>
+    <div class="d-flex align-items-center py-2" style="border-bottom: 1px solid #ffffff0a;">
+        <span class="badge badge-rejected me-2">Report</span>
+        <span class="text-light flex-fill">มีรายงานรีวิวไม่เหมาะสมในเกม "Battle Arena"</span>
+        <span class="text-secondary" style="font-size: 12px;">2 วันที่แล้ว</span>
+    </div>
+    <div class="d-flex align-items-center py-2">
+        <span class="badge" style="background: #3498db;" >สมาชิก</span>
+        <span class="text-light flex-fill ms-2">มีสมาชิกใหม่ 15 คนในสัปดาห์นี้</span>
+        <span class="text-secondary" style="font-size: 12px;">3 วันที่แล้ว</span>
+    </div>
+</div>

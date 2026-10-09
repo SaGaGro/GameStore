@@ -1,0 +1,65 @@
+@{
+    ViewData["Title"] = "สร้างโปรโมชั่นใหม่";
+}
+
+<a asp-action="Index" class="btn btn-sm mb-3" style="border: 1px solid #e94560; color: #e94560;">← กลับ</a>
+
+<p class="section-title">➕ สร้างโปรโมชั่นใหม่</p>
+
+<div class="row">
+    <div class="col-md-7">
+        <div class="rounded-3 p-4" style="background: #16213e; border: 1px solid #e9456022;">
+            <form asp-action="Create" method="post">
+
+                <div class="mb-3">
+                    <label class="form-label text-light">ชื่อโปรโมชั่น</label>
+                    <input name="Title" class="form-control" placeholder="เช่น Summer Sale 2026" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-light">รายละเอียด</label>
+                    <textarea name="Description" class="form-control" rows="3" placeholder="อธิบายโปรโมชั่น"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-light">เลือกเกม <span class="text-danger">*</span></label>
+                    <select name="GameId" class="form-select" required>
+                        <option value="">-- เลือกเกม --</option>
+                        @foreach (var g in ViewBag.Games)
+                        {
+                            <option value="@g.GameId">@g.Title</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">ประเภท</label>
+                        <select name="Type" class="form-select">
+                            <option value="FestivalSale">ลดราคาช่วงเทศกาล</option>
+                            <option value="FreeGame">แจกฟรีช่วงเวลา</option>
+                            <option value="SeriesDiscount">ลด Series ภาคเก่า</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">ส่วนลด (%)</label>
+                        <input name="DiscountPercent" type="number" class="form-control" placeholder="เช่น 20" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">วันเริ่มต้น</label>
+                        <input name="StartDate" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">วันสิ้นสุด</label>
+                        <input name="EndDate" type="date" class="form-control" />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-accent w-100 py-2">🏷️ สร้างโปรโมชั่น</button>
+            </form>
+        </div>
+    </div>
+</div>

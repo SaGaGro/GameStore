@@ -1,0 +1,13 @@
+@model GameStore.ViewModels.Lab9UserViewModel
+
+<form asp-action="Lab10" asp-controller="Account" method="post">
+    UserId <input type="text" class="form-control" name="UserId" asp-for="UserId">
+    <br>
+    Password <input type="text" class="form-control" name="Password" asp-for="Password">
+    <br>
+    Name <input type="text" class="form-control" name="Name" asp-for="Name">
+    <br>
+    Lastname <input type="text" class="form-control" name="Lastname" asp-for="Lastname">
+    <br>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

@@ -1,0 +1,137 @@
+@model GameStore.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "สมัครสมาชิก";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GameStore - สมัครสมาชิก</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        body {
+            background-color: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 0;
+        }
+        .register-card {
+            background: #16213e;
+            border: 1px solid #e9456033;
+            border-radius: 12px;
+        }
+        .form-control::placeholder {
+            color: #8888aa;
+        }
+        .form-control, .form-select {
+            background: #0f3460;
+            border: 1px solid #e9456055;
+            color: #fff;
+        }
+        .form-control:focus, .form-select:focus {
+            background: #0f3460;
+            border-color: #e94560;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(233, 69, 96, 0.25);
+        }
+        .form-select option {
+            background: #0f3460;
+        }
+        .btn-primary {
+            background: #e94560;
+            border: none;
+        }
+        .btn-primary:hover {
+            background: #c73650;
+        }
+        .text-accent { color: #e94560; }
+        a { color: #e94560; }
+        a:hover { color: #ff6b81; }
+        .section-title {
+            font-size: 13px;
+            color: #e94560;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #e9456033;
+            padding-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5">
+                <div class="register-card p-4">
+                    <h2 class="text-center text-accent fw-bold mb-1">🎮 GameStore</h2>
+                    <p class="text-center text-secondary mb-4">สร้างบัญชีใหม่</p>
+
+                    <form asp-action="Register" method="post">
+
+                        <p class="section-title mb-3">ข้อมูลบัญชี</p>
+
+                        <div class="mb-3">
+                            <label asp-for="Username" class="form-label text-light">ชื่อผู้ใช้ (Username)</label>
+                            <input asp-for="Username" type="text" class="form-control" placeholder="ใช้สำหรับเข้าสู่ระบบ" />
+                            <span asp-validation-for="Username" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label text-light">อีเมล</label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="example@email.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Password" class="form-label text-light">รหัสผ่าน</label>
+                                <input asp-for="Password" type="password" class="form-control" placeholder="อย่างน้อย 6 ตัว" maxlength="20"/>
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ConfirmPassword" class="form-label text-light">ยืนยันรหัสผ่าน</label>
+                                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="กรอกอีกครั้ง" maxlength="20"/>
+                                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <p class="section-title mb-3 mt-2">ข้อมูลโปรไฟล์</p>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DisplayName" class="form-label text-light">ชื่อที่แสดง</label>
+                                <input asp-for="DisplayName" type="text" class="form-control" placeholder="ชื่อที่คนอื่นจะเห็น" />
+                                <span asp-validation-for="DisplayName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Country" class="form-label text-light">ประเทศ</label>
+                                <select asp-for="Country" class="form-select">
+                                    <option value="">-- เลือกประเทศ --</option>
+                                    <option value="TH">ไทย</option>
+                                    <option value="US">สหรัฐอเมริกา</option>
+                                    <option value="JP">ญี่ปุ่น</option>
+                                    <option value="KR">เกาหลีใต้</option>
+                                    <option value="CN">จีน</option>
+                                    <option value="GB">สหราชอาณาจักร</option>
+                                    <option value="OTHER">อื่นๆ</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 fw-bold py-2">สร้างบัญชี</button>
+                    </form>
+
+                    <p class="text-center text-secondary mt-3 mb-0">
+                        มีบัญชีแล้ว? <a asp-action="Login">เข้าสู่ระบบ</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

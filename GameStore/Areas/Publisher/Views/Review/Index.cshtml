@@ -1,0 +1,62 @@
+@model List<GameStore.Models.DB.Review>
+
+@{
+    ViewData["Title"] = "รีวิว";
+}
+
+<p class="section-title">💬 รีวิวจากผู้เล่น</p>
+
+<!-- สรุป -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">คะแนนเฉลี่ย</p>
+            <p class="fw-bold mb-0" style="font-size: 32px; color: #f1c40f;">⭐ @ViewBag.AverageRating</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">รีวิวทั้งหมด</p>
+            <p class="fw-bold mb-0" style="font-size: 32px; color: #e94560;">@ViewBag.TotalReviews</p>
+        </div>
+    </div>
+    <div class="col-md-2 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">⭐⭐⭐⭐⭐</p>
+            <p class="fw-bold mb-0" style="font-size: 28px; color: #27ae60;">@ViewBag.FiveStars</p>
+        </div>
+    </div>
+    <div class="col-md-2 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">⭐⭐⭐⭐</p>
+            <p class="fw-bold mb-0" style="font-size: 28px; color: #f39c12;">@ViewBag.FourStars</p>
+        </div>
+    </div>
+    <div class="col-md-2 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">⭐⭐⭐</p>
+            <p class="fw-bold mb-0" style="font-size: 28px; color: #888;">@ViewBag.ThreeStars</p>
+        </div>
+    </div>
+</div>
+
+<!-- รายการรีวิว -->
+@foreach (var review in Model)
+{
+    <div class="rounded-3 p-3 mb-3" style="background: #16213e; border: 1px solid #e9456022;">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <span class="fw-bold text-light">@(review.User.DisplayName ?? review.User.Username)</span>
+                <span class="text-secondary ms-2" style="font-size: 12px;">@(review.CreatedAt?.ToString("dd MMM yyyy") ?? "-")</span>
+                <span class="badge ms-2" style="background: #0f3460; font-size: 11px;">@review.Game.Title</span>
+            </div>
+            <div style="color: #f1c40f;">
+                @for (int i = 0; i < review.Rating; i++)
+                {
+                    <span>⭐</span>
+                }
+            </div>
+        </div>
+        <p class="text-secondary mt-2 mb-0" style="font-size: 14px;">@review.Comment</p>
+    </div>
+}

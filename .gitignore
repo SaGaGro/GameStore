@@ -1,0 +1,38 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+publish/
+
+# IDE / editor
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.DotSettings.user
+
+# Secrets & local config (never commit credentials)
+.env
+.env.*
+!.env.example
+appsettings.Local.json
+appsettings.*.Local.json
+secrets.json
+
+# User-uploaded content (keep the folder, ignore the files)
+GameStore/wwwroot/uploads/games/*
+!GameStore/wwwroot/uploads/games/.gitkeep
+
+# Logs
+*.log
+
+# OS / Office temp files
+.DS_Store
+Thumbs.db
+~$*
+*.tmp
+
+# Archives / backups
+*.zip
+*.bak

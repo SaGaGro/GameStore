@@ -1,0 +1,88 @@
+@{
+    ViewData["Title"] = "ตั้งค่าแต้มสะสม";
+}
+
+<p class="section-title">🎯 ตั้งค่าระบบแต้มสะสม</p>
+
+<!-- สถิติ -->
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">แต้มที่แจกไปทั้งหมด</p>
+            <p class="fw-bold mb-0" style="font-size: 28px; color: #27ae60;">@ViewBag.TotalPointsIssued.ToString("N0")</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">แต้มที่ถูกใช้ไป</p>
+            <p class="fw-bold mb-0" style="font-size: 28px; color: #f39c12;">@ViewBag.TotalPointsUsed.ToString("N0")</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="stat-card text-center">
+            <p class="text-secondary mb-1" style="font-size: 12px;">แต้มที่หมดอายุ</p>
+            <p class="fw-bold mb-0" style="font-size: 28px; color: #888;">@ViewBag.TotalPointsExpired.ToString("N0")</p>
+        </div>
+    </div>
+</div>
+
+<!-- ฟอร์มตั้งค่า -->
+<div class="row">
+    <div class="col-md-7">
+        <div class="rounded-3 p-4" style="background: #16213e; border: 1px solid #e9456022;">
+            <h6 class="text-accent mb-3">⚙️ ตั้งค่า</h6>
+            <form>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">อัตราสะสม (แต้ม)</label>
+                        <input type="number" class="form-control" value="@ViewBag.EarnRate" />
+                        <small class="text-secondary">ได้กี่แต้มต่อยอดซื้อที่กำหนด</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">ต่อยอดซื้อ (฿)</label>
+                        <input type="number" class="form-control" value="@ViewBag.EarnPer" />
+                        <small class="text-secondary">ซื้อกี่บาทถึงจะได้แต้ม</small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">มูลค่าแต้ม (฿)</label>
+                        <input type="number" class="form-control" value="@ViewBag.PointValue" />
+                        <small class="text-secondary">1 แต้ม = กี่บาท</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">ใช้ได้สูงสุด (%)</label>
+                        <input type="number" class="form-control" value="@ViewBag.MaxUsagePercent" />
+                        <small class="text-secondary">% ของยอดซื้อต่อครั้ง</small>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-light">วันหมดอายุ (วัน)</label>
+                    <input type="number" class="form-control" value="@ViewBag.ExpiryDays" />
+                    <small class="text-secondary">แต้มหมดอายุกี่วันหลังได้รับ</small>
+                </div>
+
+                <button type="submit" class="btn btn-accent w-100 py-2">💾 บันทึกการตั้งค่า</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="rounded-3 p-4" style="background: #16213e; border: 1px solid #e9456022;">
+            <h6 class="text-accent mb-3">📌 ตัวอย่างการคำนวณ</h6>
+            <div class="rounded-3 p-3 mb-2" style="background: #0f3460; font-size: 13px;">
+                <p class="text-light mb-1">ลูกค้าซื้อเกมราคา ฿1,000</p>
+                <p class="mb-1">→ ได้รับ <span style="color: #27ae60; font-weight: bold;">50 แต้ม</span> (1,000 ÷ 100 × 5)</p>
+                <p class="mb-1">→ มูลค่า <span style="color: #27ae60; font-weight: bold;">฿50</span></p>
+                <p class="mb-0">→ หมดอายุใน <span style="color: #f39c12; font-weight: bold;">180 วัน</span></p>
+            </div>
+            <div class="rounded-3 p-3" style="background: #0f3460; font-size: 13px;">
+                <p class="text-light mb-1">ลูกค้าซื้อเกมราคา ฿500 (มี 50 แต้ม)</p>
+                <p class="mb-1">→ ใช้แต้มได้สูงสุด <span style="color: #f39c12; font-weight: bold;">฿100</span> (500 × 20%)</p>
+                <p class="mb-0">→ จ่ายจริง <span style="color: #e94560; font-weight: bold;">฿450</span></p>
+            </div>
+        </div>
+    </div>
+</div>

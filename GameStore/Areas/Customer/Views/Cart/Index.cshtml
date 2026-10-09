@@ -1,0 +1,158 @@
+@model GameStore.ViewModels.CartViewModel
+
+@{
+    ViewData["Title"] = "ตะกร้าสินค้า";
+}
+
+<p class="section-title">🛒 ตะกร้าสินค้า</p>
+
+@if (Model.Items.Count == 0)
+{
+    <div class="text-center py-5">
+        <p style="font-size: 48px;">🛒</p>
+        <p class="text-secondary">ตะกร้าว่างเปล่า</p>
+        <a asp-area="Customer" asp-controller="Game" asp-action="Index" class="btn mt-2" style="background: #e94560; color: #fff;">
+            ไปเลือกเกม
+        </a>
+    </div>
+}
+else
+{
+    <div class="row">
+        <!-- รายการสินค้า -->
+        <div class="col-md-8">
+            @foreach (var item in Model.Items)
+            {
+                <div class="rounded-3 p-3 mb-3 d-flex align-items-center" style="background: #16213e; border: 1px solid #e9456022;">
+                    <a asp-area="Customer" asp-controller="Game" asp-action="Detail" asp-route-id="@item.Game.GameId">
+                        <img src="@item.Game.CoverImage" alt="@item.Game.Title" class="rounded" style="width: 150px; height: 85px; object-fit: cover;" />
+                    </a>
+
+                    <div class="ms-3 flex-fill">
+                        <a asp-area="Customer" asp-controller="Game" asp-action="Detail" asp-route-id="@item.Game.GameId" style="text-decoration: none;">
+                            <h6 class="fw-bold text-light mb-1">@item.Game.Title</h6>
+                        </a>
+                        <span class="game-genre">@item.Game.Genre</span>
+                        @if (item.DiscountNote != null)
+                        {
+                            <div style="font-size: 11px; color: #27ae60; margin-top: 4px;">@item.DiscountNote</div>
+                        }
+                    </div>
+
+                    <!-- ราคา -->
+                    <div class="text-end" style="min-width: 150px;">
+                        @if (item.DiscountAmount > 0)
+                        {
+                            <span class="game-price-old">฿@item.Game.BasePrice.ToString("N0")</span><br />
+                            <span style="font-weight: bold; color: #e94560; font-size: 18px;">฿@item.EffectivePrice.ToString("N0")</span>
+                        }
+                        else
+                        {
+                            <span style="font-weight: bold; color: #e94560; font-size: 18px;">฿@item.Game.BasePrice.ToString("N0")</span>
+                        }
+                    </div>
+
+                    <!-- ปุ่มลบ -->
+                    <form asp-area="Customer" asp-controller="Cart" asp-action="Remove" method="post" class="ms-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="gameId" value="@item.Game.GameId" />
+                        <button type="submit" class="btn btn-sm" style="border: 1px solid #888; color: #888;">✕</button>
+                    </form>
+                </div>
+            }
+        </div>
+
+        <!-- สรุปราคา -->
+        <div class="col-md-4">
+            <form id="checkoutForm" asp-area="Customer" asp-controller="Cart" asp-action="Checkout" method="get">
+                <div class="rounded-3 p-4" style="background: #16213e; border: 1px solid #e9456022;">
+                    <h6 class="fw-bold mb-3">สรุปคำสั่งซื้อ</h6>
+
+                    <!-- ราคาเต็ม -->
+                    <div class="d-flex justify-content-between mb-2" style="font-size: 14px;">
+                        <span class="text-secondary">ราคาเต็ม (@Model.Items.Count เกม)</span>
+                        <span>฿@Model.Subtotal.ToString("N0")</span>
+                    </div>
+
+                    <!-- ส่วนลดโปรโมชั่น -->
+                    @if (Model.DiscountFromPromotion > 0)
+                    {
+                        <div class="d-flex justify-content-between mb-2" style="font-size: 14px;">
+                            <span class="text-secondary">ส่วนลดโปรโมชั่น</span>
+                            <span style="color: #27ae60;">-฿@Model.DiscountFromPromotion.ToString("N0")</span>
+                        </div>
+                    }
+
+                    <!-- แต้มสะสม -->
+                    <div class="rounded-3 p-3 my-3" style="background: #0f3460;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span style="font-size: 13px;">🎯 ใช้แต้มสะสม</span>
+                            <span style="font-size: 12px; color: #888;">มี @Model.PointsAvailable แต้ม</span>
+                        </div>
+                        @if (Model.PointsRedeemable > 0)
+                        {
+                            <div class="d-flex gap-2 align-items-center">
+                                <input type="number" id="pointsInput" name="pointsToUse"
+                                       value="0" min="0" max="@Model.PointsRedeemable"
+                                       class="form-control form-control-sm"
+                                       style="background: #16213e; border: 1px solid #e9456055; color: #fff; width: 100px;"
+                                       oninput="updatePointsPreview(this.value)" />
+                                <span class="text-secondary" style="font-size: 12px;">/ @Model.PointsRedeemable แต้ม</span>
+                            </div>
+                            <div id="pointsPreview" class="mt-2 d-flex justify-content-between" style="font-size: 13px; display:none !important;">
+                                <span class="text-secondary">ส่วนลดจากแต้ม</span>
+                                <span id="pointsDiscountVal" style="color: #27ae60;">-฿0</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="font-size: 12px; color: #666;">ไม่มีแต้มที่ใช้ได้</div>
+                        }
+                    </div>
+
+                    <hr style="border-color: #e9456033;" />
+
+                    <!-- ยอดรวม -->
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="fw-bold">ยอดหลังส่วนลด</span>
+                        <span id="totalDisplay" class="fw-bold" style="font-size: 24px; color: #e94560;">฿@Model.Total.ToString("N0")</span>
+                    </div>
+
+                    <div class="mb-3" style="font-size: 12px; color: #27ae60; text-align: right;">
+                        🎯 จะได้รับ +<span id="earnedDisplay">@Model.PointsEarned</span> แต้ม
+                    </div>
+
+                    <button type="submit" class="btn fw-bold w-100 py-2" style="background: #e94560; color: #fff; font-size: 16px;">
+                        💳 ชำระเงิน
+                    </button>
+
+                    <a asp-area="Customer" asp-controller="Game" asp-action="Index"
+                       class="btn w-100 mt-2" style="border: 1px solid #e9456055; color: #aaa; font-size: 14px;">
+                        ← เลือกเกมเพิ่ม
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+<script>
+    var baseTotal = @Model.Total;
+    var pointValue = 0.5;
+    var pointsPerBaht = 0.1;
+
+    function updatePointsPreview(pts) {
+        pts = Math.max(0, Math.min(parseInt(pts) || 0, @Model.PointsRedeemable));
+        var discount = pts * pointValue;
+        var newTotal = Math.max(0, baseTotal - discount);
+        var earned = Math.floor(newTotal * pointsPerBaht);
+
+        document.getElementById('pointsDiscountVal').textContent = '-฿' + discount.toLocaleString('th-TH', {minimumFractionDigits:0});
+        document.getElementById('totalDisplay').textContent = '฿' + newTotal.toLocaleString('th-TH', {minimumFractionDigits:0});
+        document.getElementById('earnedDisplay').textContent = earned;
+
+        var preview = document.getElementById('pointsPreview');
+        if (pts > 0) preview.style.removeProperty('display');
+        else preview.style.setProperty('display', 'none', 'important');
+    }
+</script>
